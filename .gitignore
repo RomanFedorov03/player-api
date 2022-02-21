@@ -8,6 +8,7 @@
 /public/admin
 /public/mix-manifest.json
 /public/json
+/storage
 /storage/*.key
 /vendor
 .env
