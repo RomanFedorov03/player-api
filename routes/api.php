@@ -23,7 +23,7 @@ Route::middleware('api.json')->group(function () {
     Route::post('login', [AuthController::class, 'login'])->name('login');
 
     Route::middleware('api.auth')->group(function () {
-        Route::get('search', SearchController::class, 'search');
+//        Route::get('search', SearchController::class, 'search');
         Route::prefix('playlists')->group(function () {
             Route::get('/', [PlaylistController::class, 'playlists']);
             Route::post('create', [PlaylistController::class, 'create']);
