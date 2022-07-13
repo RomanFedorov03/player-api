@@ -10,9 +10,10 @@ use App\Models\Playlist;
 use App\Models\PlaylistTrack;
 use App\Models\Track;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Owenoj\LaravelGetId3\GetId3;
 
 class PlaylistController extends Controller
@@ -188,5 +189,52 @@ class PlaylistController extends Controller
             return $file->getClientOriginalName();
         }
         return null;
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function addTrack(Request $request): JsonResponse
+    {
+        $playlist = Playlist::find($request['playlistId']);
+        $track = Track::find($request['trackId']);
+        if ($playlist && $track) {
+            $playlistTracksCount = $playlist->tracks->count();
+            if ($playlistTracksCount)
+                $playlistTracksCount++;
+            PlaylistTrack::query()->firstOrCreate([
+                'playlist_id' => $playlist['id'],
+                'track_id' => $track['id'],
+            ], [
+                'number' => $playlistTracksCount
+            ]);
+            return response()->json([
+                'status' => 'success',
+            ], 403);
+        }
+
+        return response()->json([
+            'status' => 'error',
+        ], 403);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function removeTrack(Request $request): JsonResponse
+    {
+        $playlist = Playlist::where('user_id',auth()->id())->where('id',$request['playlistId'])->first();
+        if ($playlist) {
+            PlaylistTrack::query()->where('playlist_id', $playlist['id'])->where('track_id', $request['trackId'])->delete();
+            return response()->json([
+                'status' => 'success',
+            ], 403);
+        }
+
+        return response()->json([
+            'status' => 'error',
+        ], 403);
     }
 }

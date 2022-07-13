@@ -3,6 +3,7 @@
 use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\PlaylistController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,10 +29,11 @@ Route::middleware('api.json')->group(function () {
                 Route::post('edit', [PlaylistController::class, 'edit']);
             });
             Route::post('load-tracks', [PlaylistController::class, 'loadTracks']);
+            Route::post('add-track', [PlaylistController::class, 'addTrack']);
+            Route::post('remove-track', [PlaylistController::class, 'removeTrack']);
         });
         Route::prefix('profile')->group(function () {
-//            Route::get('/', [PlaylistController::class, 'playlists']);
-//            Route::get('/{id}', [PlaylistController::class, 'playlists']);
+            Route::post('edit', [ProfileController::class, 'edit']);
 
             Route::prefix('{id}')->group(function () {
 //                Route::get('/', [PlaylistController::class, 'playlists']);

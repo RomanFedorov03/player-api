@@ -14,4 +14,6 @@ class PlaylistTrack extends Model
         'track_id',
         'number'
     ];
+
+    public $timestamps = false;
 }
