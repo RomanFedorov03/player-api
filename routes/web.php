@@ -13,8 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome')->with([
-        'playlists' => \App\Models\Playlist::all()->toArray()
-    ]);
-});
+//Route::get('/', function () {
+//    return view('welcome')->with([
+//        'playlists' => \App\Models\Playlist::all()->toArray()
+//    ]);
+//});

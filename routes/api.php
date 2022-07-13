@@ -4,6 +4,8 @@ use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\PlaylistController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\TrackController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,6 +23,7 @@ Route::middleware('api.json')->group(function () {
     Route::post('login', [AuthController::class, 'login'])->name('login');
 
     Route::middleware('api.auth')->group(function () {
+        Route::get('search', SearchController::class, 'search');
         Route::prefix('playlists')->group(function () {
             Route::get('/', [PlaylistController::class, 'playlists']);
             Route::post('create', [PlaylistController::class, 'create']);
@@ -32,11 +35,14 @@ Route::middleware('api.json')->group(function () {
             Route::post('add-track', [PlaylistController::class, 'addTrack']);
             Route::post('remove-track', [PlaylistController::class, 'removeTrack']);
         });
+        Route::prefix('track')->group(function () {
+            Route::get('/{id}', [TrackController::class, 'get']);
+        });
+
         Route::prefix('profile')->group(function () {
             Route::post('edit', [ProfileController::class, 'edit']);
 
             Route::prefix('{id}')->group(function () {
-//                Route::get('/', [PlaylistController::class, 'playlists']);
                 Route::get('playlists', [PlaylistController::class, 'playlistsById']);
             });
 

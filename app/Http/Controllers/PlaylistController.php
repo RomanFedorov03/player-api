@@ -104,7 +104,7 @@ class PlaylistController extends Controller
      */
     public function playlist($id)
     {
-        $playlist = Playlist::with('tracks:id,artist_id,album_id,name,file,id3')->select([
+        $playlist = Playlist::with(['tracks:id,artist_id,album_id,name,file,id3', 'tracks.album:id,photo'])->select([
             'id',
             'user_id',
             'name',
