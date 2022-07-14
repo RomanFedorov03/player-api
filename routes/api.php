@@ -23,13 +23,20 @@ Route::middleware('api.json')->group(function () {
     Route::post('login', [AuthController::class, 'login'])->name('login');
 
     Route::middleware('api.auth')->group(function () {
-        Route::get('search', [SearchController::class, 'search']);
+        Route::prefix('search')->group(function () {
+            Route::get('/', [SearchController::class, 'search']);
+            Route::get('/tracks', [SearchController::class, 'searchTracks']);
+            Route::get('/albums', [SearchController::class, 'searchAlbums']);
+            Route::get('/artists', [SearchController::class, 'searchArtists']);
+            Route::get('/playlists', [SearchController::class, 'searchPlaylists']);
+        });
         Route::prefix('playlists')->group(function () {
             Route::get('/', [PlaylistController::class, 'playlists']);
             Route::post('create', [PlaylistController::class, 'create']);
             Route::prefix('{id}')->group(function () {
                 Route::get('/', [PlaylistController::class, 'playlist']);
                 Route::post('edit', [PlaylistController::class, 'edit']);
+                Route::post('delete', [PlaylistController::class, 'delete']);
             });
             Route::post('load-tracks', [PlaylistController::class, 'loadTracks']);
             Route::post('add-track', [PlaylistController::class, 'addTrack']);

@@ -72,13 +72,33 @@ class PlaylistController extends Controller
     }
 
     /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function delete(Request $request): JsonResponse
+    {
+        $playlist = Playlist::find($request['id']);
+        if ($playlist && $playlist['user_id'] === Auth::user()->id) {
+            PlaylistTrack::query()->where('playlist_id', $playlist['id'])->delete();
+            $playlist->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Плейлист удален!',
+            ], 403);
+        }
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Плейлист не найден!',
+        ], 403);
+    }
+
+    /**
      * @return array
      */
     public function playlists(): array
     {
-        $user = Auth::user();
-
-        $playlists = Playlist::query()->paginate(10);
+        $playlists = Playlist::query()->paginate(30);
 
         return [
             'playlists' => $playlists,
@@ -197,7 +217,7 @@ class PlaylistController extends Controller
      */
     public function addTrack(Request $request): JsonResponse
     {
-        $playlist = Playlist::find($request['playlistId']);
+        $playlist = Playlist::where('playlist_id', $request['playlistId'])->where('user_id', auth()->id())->first();
         $track = Track::find($request['trackId']);
         if ($playlist && $track) {
             $playlistTracksCount = $playlist->tracks->count();
