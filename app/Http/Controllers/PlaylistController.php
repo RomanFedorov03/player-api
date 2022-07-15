@@ -12,6 +12,7 @@ use App\Models\Track;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Owenoj\LaravelGetId3\GetId3;
@@ -120,7 +121,7 @@ class PlaylistController extends Controller
 
     /**
      * @param $id
-     * @return \Illuminate\Support\Collection|null[]
+     * @return Collection|null[]
      */
     public function playlist($id)
     {
@@ -161,33 +162,37 @@ class PlaylistController extends Controller
         $playlist = Playlist::find($request['id']);
         if ($playlist && $playlist['user_id'] === $user['id'] && $request['tracks']) {
             foreach ($request['tracks'] as $key => $track) {
-//                dd($track);
+                $fileName = $track->getClientOriginalName();
+                $fileName = substr($fileName, 0, strrpos($fileName,'.'));
                 $id3 = new GetId3($track);
-                $artist = Artist::firstOrCreate(['name' => $id3->getArtist()]);
-                if ($id3->getAlbum()) {
-                    $album = Album::firstOrCreate([
-                        'artist_id' => $artist['id'],
-                        'name' => $id3->getAlbum(),
-                        'description' => null,
-                    ]);
-                    if (is_null($album['photo']) && !is_null($id3->getArtwork(true))) {
-                        $album->update([
-                            'photo' => $this->saveFile($id3->getArtwork(true), "albums"),
+                if ($id3->getArtist()) {
+                    $artist = Artist::firstOrCreate(['name' => $id3->getArtist()]);
+                    if ($id3->getAlbum()) {
+                        $album = Album::firstOrCreate([
+                            'artist_id' => $artist['id'],
+                            'name' => $id3->getAlbum(),
+                            'description' => null,
                         ]);
+                        if (is_null($album['photo']) && !is_null($id3->getArtwork(true))) {
+                            $album->update([
+                                'photo' => $this->saveFile($id3->getArtwork(true), "albums"),
+                            ]);
+                        }
                     }
                 }
 
+                $name = $id3->getArtist() ? $id3->getTitle() : $fileName;
                 $track = Track::firstOrCreate([
-                    'artist_id' => $artist['id'],
+                    'artist_id' => $artist['id'] ?? null,
                     'album_id' => $album['id'] ?? null,
-                    'name' => $id3->getTitle(),
+                    'name' => $name,
                 ], [
                     'file' => $this->saveFile($track, "tracks"),
                     'id3' => [
-                        'title' => $id3->getTitle(),
-                        'artist' => $id3->getArtist(),
-                        'getAlbum' => $id3->getAlbum(),
-                        'getGenres' => $id3->getGenres(),
+                        'title' => $name,
+                        'artist' => $id3->getArtist() ?? null,
+                        'getAlbum' => $id3->getAlbum() ?? null,
+                        'getGenres' => $id3->getGenres() ?? null,
                         'time' => $id3->getPlaytime(),
                     ]
                 ]);
