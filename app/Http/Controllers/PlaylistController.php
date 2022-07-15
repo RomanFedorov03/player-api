@@ -85,12 +85,12 @@ class PlaylistController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Плейлист удален!',
-            ], 403);
+            ]);
         }
         return response()->json([
             'status' => 'error',
             'message' => 'Плейлист не найден!',
-        ], 403);
+        ]);
     }
 
     /**
@@ -231,12 +231,12 @@ class PlaylistController extends Controller
             ]);
             return response()->json([
                 'status' => 'success',
-            ], 403);
+            ]);
         }
 
         return response()->json([
             'status' => 'error',
-        ], 403);
+        ]);
     }
 
     /**
@@ -250,11 +250,24 @@ class PlaylistController extends Controller
             PlaylistTrack::query()->where('playlist_id', $playlist['id'])->where('track_id', $request['trackId'])->delete();
             return response()->json([
                 'status' => 'success',
-            ], 403);
+            ]);
         }
 
         return response()->json([
             'status' => 'error',
-        ], 403);
+        ], 400);
+    }
+
+
+    public function playlistTracks(Request $request)
+    {
+        $playlist = Playlist::find($request['id']);
+//        dd($playlist->tracks);
+        if ($playlist)
+            return $playlist->tracks;
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Плейлит не найден'
+        ]);
     }
 }

@@ -35,6 +35,7 @@ Route::middleware('api.json')->group(function () {
             Route::post('create', [PlaylistController::class, 'create']);
             Route::prefix('{id}')->group(function () {
                 Route::get('/', [PlaylistController::class, 'playlist']);
+                Route::get('/tracks', [PlaylistController::class, 'playlistTracks']);
                 Route::post('edit', [PlaylistController::class, 'edit']);
                 Route::post('delete', [PlaylistController::class, 'delete']);
             });
