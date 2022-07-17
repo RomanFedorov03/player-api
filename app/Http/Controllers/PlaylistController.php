@@ -107,6 +107,19 @@ class PlaylistController extends Controller
     }
 
     /**
+     * @return array
+     */
+    public function myPlaylists(): array
+    {
+//        $user = \auth()->user();
+        $playlists = Playlist::query()->where('user_id', \auth()->id())->get();
+
+        return [
+            'playlists' => $playlists,
+        ];
+    }
+
+    /**
      * @param $id
      * @return array
      */

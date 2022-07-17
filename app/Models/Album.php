@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Album extends Model
 {
@@ -23,6 +24,12 @@ class Album extends Model
         return $this->belongsTo(
             Artist::class,
             'artist_id'
+        );
+    }
+    public function tracks(): HasMany
+    {
+        return $this->hasMany(
+            Track::class
         );
     }
 }

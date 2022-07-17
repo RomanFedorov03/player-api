@@ -33,8 +33,12 @@ Route::middleware('api.json')->group(function () {
         Route::prefix('artist')->group(function () {
             Route::get('/{id}', [TrackController::class, 'artist']);
         });
+        Route::prefix('album')->group(function () {
+            Route::get('/{id}', [TrackController::class, 'album']);
+        });
         Route::prefix('playlists')->group(function () {
             Route::get('/', [PlaylistController::class, 'playlists']);
+            Route::get('/my', [PlaylistController::class, 'myPlaylists']);
             Route::post('create', [PlaylistController::class, 'create']);
             Route::prefix('{id}')->group(function () {
                 Route::get('/', [PlaylistController::class, 'playlist']);
