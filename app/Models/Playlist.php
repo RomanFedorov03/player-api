@@ -54,6 +54,11 @@ class Playlist extends Model
      */
     public function tracks(): BelongsToMany
     {
-        return $this->belongsToMany(Track::class);
+        return $this->belongsToMany(
+            Track::class,
+            'playlist_track',
+            'playlist_id',
+            'track_id'
+        );
     }
 }

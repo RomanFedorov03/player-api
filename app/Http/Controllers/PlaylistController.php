@@ -99,7 +99,15 @@ class PlaylistController extends Controller
      */
     public function playlists(): array
     {
-        $playlists = Playlist::query()->paginate(30);
+        $playlists = Playlist::query()
+            ->whereHas('tracks',function ($query) {
+                if ($query) {
+                    return true;
+                }
+                return false;
+//                    $query->count() > 0;
+            })
+            ->paginate(30);
 
         return [
             'playlists' => $playlists,
