@@ -100,6 +100,7 @@ class PlaylistController extends Controller
     public function playlists(): array
     {
         $playlists = Playlist::query()
+            ->where('private', 0)
             ->whereHas('tracks',function ($query) {
                 if ($query) {
                     return true;
