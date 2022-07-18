@@ -22,7 +22,10 @@ class Album extends Model
      */
     public function getPhotoAttribute(): ?string
     {
-        return $this->attributes['photo'] ? Storage::url("albums/{$this->attributes['photo']}") : asset('images/default_album.gif');
+        if (isset($this->attributes['photo'])) {
+            return $this->attributes['photo'] ? Storage::url("albums/{$this->attributes['photo']}") : asset('images/default_album.gif');
+        }
+        return asset('images/default_album.gif');
     }
 
     /**
