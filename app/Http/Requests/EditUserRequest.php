@@ -33,7 +33,7 @@ class EditUserRequest extends FormRequest
     {
         return [
             'name' => 'max:255',
-            'description' => 'text',
+            'description' => 'string|nullable',
             'login' => 'min:4|max:16|unique:users,login,'.auth()->user()->login,
             'password' => 'string|min:8|max:191',
             'avatar' => 'file'
