@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Album extends Model
 {
@@ -15,6 +16,14 @@ class Album extends Model
         'photo',
         'release_date',
     ];
+
+    /**
+     * @return string|null
+     */
+    public function getPhotoAttribute(): ?string
+    {
+        return $this->attributes['photo'] ? Storage::url("albums/{$this->attributes['photo']}") : asset('images/default_album.gif');
+    }
 
     /**
      * @return BelongsTo
