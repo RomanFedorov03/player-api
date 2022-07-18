@@ -244,7 +244,7 @@ class PlaylistController extends Controller
      */
     public function addTrack(Request $request): JsonResponse
     {
-        $playlist = Playlist::where('playlist_id', $request['playlistId'])->where('user_id', auth()->id())->first();
+        $playlist = Playlist::where('id', $request['playlistId'])->where('user_id', auth()->id())->first();
         $track = Track::find($request['trackId']);
         if ($playlist && $track) {
             $playlistTracksCount = $playlist->tracks->count();
