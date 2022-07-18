@@ -22,6 +22,8 @@ class ProfileController extends Controller
             $body['name'] =  $request['name'];
         if (isset($request['login']))
             $body['login'] =  $request['login'];
+        if (isset($request['description']))
+            $body['description'] =  $request['description'];
         if (isset($request['password']))
             $body['password'] =  Hash::make($request['password']);
         if (isset($request['avatar']))

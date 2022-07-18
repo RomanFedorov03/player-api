@@ -30,10 +30,10 @@ Route::middleware('api.json')->group(function () {
             Route::get('/artists', [SearchController::class, 'searchArtists']);
             Route::get('/playlists', [SearchController::class, 'searchPlaylists']);
         });
-        Route::prefix('artist')->group(function () {
+        Route::prefix('artists')->group(function () {
             Route::get('/{id}', [TrackController::class, 'artist']);
         });
-        Route::prefix('album')->group(function () {
+        Route::prefix('albums')->group(function () {
             Route::get('/{id}', [TrackController::class, 'album']);
         });
         Route::prefix('playlists')->group(function () {
