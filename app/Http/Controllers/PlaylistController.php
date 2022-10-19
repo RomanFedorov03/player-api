@@ -10,6 +10,9 @@ use App\Models\Playlist;
 use App\Models\PlaylistTrack;
 use App\Models\Track;
 use App\Models\User;
+use getid3_exception;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -30,7 +33,7 @@ class PlaylistController extends Controller
         }
 
         $playlist = Playlist::create([
-            'user_id' => Auth::user()->id,
+            'user_id' => Auth::id(),
             'name' => $request['name'],
             'description' => $request['description'],
             'photo' => isset($request['photo']) ? $request['photo']->hashName() : null,
@@ -42,10 +45,14 @@ class PlaylistController extends Controller
         ];
     }
 
+    /**
+     * @param PlaylistRequest $request
+     * @return array|JsonResponse
+     */
     public function edit(PlaylistRequest $request)
     {
         $playlist = Playlist::find($request['id']);
-        if ($playlist && $playlist['user_id'] === Auth::user()->id) {
+        if ($playlist && $playlist['user_id'] === Auth::id()) {
             if ($request['photo']) {
                 Storage::put("playlists/", $request['photo']);
                 if ($playlist['photo']) {
@@ -56,7 +63,7 @@ class PlaylistController extends Controller
                 ]);
             }
             $playlist->update([
-                'user_id' => Auth::user()->id,
+                'user_id' => Auth::id(),
                 'name' => $request['name'],
                 'description' => $request['description'],
                 'private' => $request['private']
@@ -79,7 +86,7 @@ class PlaylistController extends Controller
     public function delete(Request $request): JsonResponse
     {
         $playlist = Playlist::find($request['id']);
-        if ($playlist && $playlist['user_id'] === Auth::user()->id) {
+        if ($playlist && $playlist['user_id'] === Auth::id()) {
             PlaylistTrack::query()->where('playlist_id', $playlist['id'])->delete();
             $playlist->delete();
 
@@ -106,7 +113,6 @@ class PlaylistController extends Controller
                     return true;
                 }
                 return false;
-//                    $query->count() > 0;
             })
             ->paginate(30);
 
@@ -120,7 +126,6 @@ class PlaylistController extends Controller
      */
     public function myPlaylists(): array
     {
-//        $user = \auth()->user();
         $playlists = Playlist::query()->where('user_id', \auth()->id())->get();
 
         return [
@@ -178,6 +183,11 @@ class PlaylistController extends Controller
         ];
     }
 
+    /**
+     * @param LoadTracksRequest $request
+     * @return Builder|\Illuminate\Database\Eloquent\Collection|Model|null
+     * @throws getid3_exception
+     */
     public function loadTracks(LoadTracksRequest $request)
     {
         $user = Auth::user();
@@ -226,6 +236,11 @@ class PlaylistController extends Controller
         return Playlist::with('tracks')->find($playlist['id']);
     }
 
+    /**
+     * @param $file
+     * @param $directory
+     * @return null
+     */
     private function saveFile($file, $directory)
     {
         if ($file) {
@@ -286,10 +301,13 @@ class PlaylistController extends Controller
     }
 
 
-    public function playlistTracks(Request $request)
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function playlistTracks(Request $request): JsonResponse
     {
         $playlist = Playlist::find($request['id']);
-//        dd($playlist->tracks);
         if ($playlist)
             return $playlist->tracks;
         return response()->json([

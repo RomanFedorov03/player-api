@@ -9,7 +9,6 @@
 /bootstrap/cache/*
 /public/mix-manifest.json
 /public/json
-/storage
 /storage/*.key
 /vendor
 .env
@@ -24,5 +23,4 @@ yarn-error.log
 .idea
 
 docker
-.gitmodules
 Makefile

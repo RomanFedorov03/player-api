@@ -31,7 +31,10 @@ class Playlist extends Model
         return $this->attributes['photo'] ? Storage::url("playlists/{$this->attributes['photo']}") : asset('images/playlist.jpg');
     }
 
-    public function getEditAttribute()
+    /**
+     * @return int
+     */
+    public function getEditAttribute(): int
     {
         $auth = Auth::user();
         if ($auth && $this->attributes['user_id'] === $auth->id) {

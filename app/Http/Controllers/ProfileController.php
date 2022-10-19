@@ -9,7 +9,11 @@ use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
-    public function edit(EditUserRequest $request)
+    /**
+     * @param EditUserRequest $request
+     * @return array
+     */
+    public function edit(EditUserRequest $request): array
     {
         $user = auth()->user();
         if (isset($request['avatar'])) {

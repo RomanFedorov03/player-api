@@ -11,7 +11,11 @@ use Illuminate\Http\Request;
 
 class SearchController extends Controller
 {
-    public function search(Request $request)
+    /**
+     * @param Request $request
+     * @return array
+     */
+    public function search(Request $request): array
     {
         $search = $request['search'];
         $tracks = Track::query()

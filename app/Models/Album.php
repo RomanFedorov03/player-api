@@ -38,6 +38,10 @@ class Album extends Model
             'artist_id'
         );
     }
+
+    /**
+     * @return HasMany
+     */
     public function tracks(): HasMany
     {
         return $this->hasMany(
